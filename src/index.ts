@@ -57,6 +57,7 @@ showcase.addEventListener('load', async function () {
   try {
     // sdk = await showcase.contentWindow.MP_SDK.connect(showcase, key, '3.6')
     sdk = await GetSDK(showcase, key);
+    // 初始化assets文件夹中的vs-app.json模型
     await initComponents(sdk);
     sdk.on(sdk.Model.Event.MODEL_LOADED,
       function (model: any) {
@@ -115,13 +116,15 @@ showcase.addEventListener('load', async function () {
   }
 
 
+  // 添加鹦鹉模型
   const sceneObjects = await sdk.Scene.createObjects(1)
 // add a scene node for the fbx model
   const gltfNode = sceneObjects[0].addNode()
 
 // adjust the position of the scene node
-  gltfNode.obj3D.position.set(0, 0, 0)
-  gltfNode.obj3D.scale.set(1, 1, 1)
+  gltfNode.obj3D.position.set(-0.6, 1, 5)
+  gltfNode.obj3D.scale.set(2, 2, 2)
+  gltfNode.obj3D.rotation.set(-3.14, 0, -3.14)
 
 // add the gltf loader component that loads a parrot model. Adjust the model's scale to make it fit inside the model.
   const gltfComponent = gltfNode.addComponent('mp.gltfLoader', {
@@ -172,16 +175,19 @@ showcase.addEventListener('load', async function () {
 // set 'translate' mode to position the selection.
   myControl.inputs.mode = 'rotate'
 
+  // 点击事件
   class ClickSpy {
     public eventType = 'INTERACTION.CLICK'
 
     public onEvent (payload: unknown) {
       console.log('received',  gltfNode)
       if (myControl.inputs.selection === null) {
+        // 设定模块
         myControl.inputs.selection = gltfNode
         updateData(gltfNode)
       } else {
         myControl.inputs.selection = null
+        // myControl.inputs.b
         unUpdateDate()
       }
     }
@@ -210,7 +216,6 @@ showcase.addEventListener('load', async function () {
   // })
   // console.log('6')
 
-  console.log(myControl.inputs)
   // Start the scene object and its nodes.
   sceneObjects[0].start()
 
